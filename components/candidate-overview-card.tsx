@@ -21,7 +21,7 @@ interface CandidateOverviewCardProps {
 }
 
 export function CandidateOverviewCard({ profile }: CandidateOverviewCardProps) {
-  const contactEmail = profile.contactEmail || "lalitheaswaranl@gmail.com";
+  const contactEmail = profile.contactEmail || "lalitheaswaranlwork@gmail.com";
   const contactPhone = profile.contactPhone || "+91 9787288277";
   const location = profile.contactLocation || "Chennai, Tamil Nadu, India";
 
