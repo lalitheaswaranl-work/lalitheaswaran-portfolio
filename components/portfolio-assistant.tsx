@@ -278,19 +278,31 @@ export function PortfolioAssistant({ ownerName }: { ownerName: string }) {
 
   return (
     <>
-      {/* Full-screen backdrop blur when chatbot is open */}
+      {/* Full-screen dramatic backdrop blur covering the entire page behind the chatbot popup */}
       {open && (
         <div
           role="presentation"
           aria-hidden="true"
           onClick={() => setOpen(false)}
-          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-md transition-all duration-300"
+          className="fixed inset-0 z-[90] transition-all duration-300 cursor-pointer animate-in fade-in"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "100vw",
+            height: "100dvh",
+            backgroundColor: "rgba(3, 7, 18, 0.65)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+          }}
         />
       )}
 
       <div
         suppressHydrationWarning
-        className="fixed inset-x-4 bottom-4 z-50 flex flex-col items-end gap-3 sm:inset-x-auto sm:bottom-5 sm:right-5"
+        className="fixed inset-x-4 bottom-4 z-[100] flex flex-col items-end gap-3 sm:inset-x-auto sm:bottom-5 sm:right-5"
       >
         {open ? (
           <section
