@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Lalitheaswaran L — Senior Frontend & Web SDK Architect
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
@@ -136,3 +137,6 @@ npx playwright test
 
 ## 📄 License
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+=======
+# portfolio
+>>>>>>> 407c033e92dc6da8a1a4180418419d4e0554715c
