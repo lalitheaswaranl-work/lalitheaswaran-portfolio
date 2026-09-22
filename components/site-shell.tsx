@@ -27,7 +27,6 @@ export async function SiteShell({ children, profile: requestedProfile }: { child
     { href: "/resume", label: profile.navResumeLabel || "Resume" },
     { href: "/timeline", label: profile.navExperienceLabel || "Journey" },
     { href: "/jobs", label: "Jobs & Openings", shortLabel: "Jobs" },
-    { href: "/about", label: "About" },
   ];
   const contactItems = [
     profile.contactEmail ? { label: profile.contactEmail, href: `mailto:${profile.contactEmail}`, icon: Mail } : null,

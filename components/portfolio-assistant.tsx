@@ -277,12 +277,29 @@ export function PortfolioAssistant({ ownerName }: { ownerName: string }) {
   }
 
   return (
-    <div
-      suppressHydrationWarning
-      className="fixed inset-x-4 bottom-4 z-50 flex flex-col items-end gap-3 sm:inset-x-auto sm:bottom-5 sm:right-5"
-    >
-      {open ? (
-        <section ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="portfolio-assistant-title" className="surface flex max-h-[calc(100dvh-7rem)] w-full flex-col overflow-hidden rounded-lg p-4 shadow-2xl sm:w-[min(34rem,calc(100vw-2.5rem))]">
+    <>
+      {/* Full-screen backdrop blur when chatbot is open */}
+      {open && (
+        <div
+          role="presentation"
+          aria-hidden="true"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-40 bg-black/45 backdrop-blur-md transition-all duration-300"
+        />
+      )}
+
+      <div
+        suppressHydrationWarning
+        className="fixed inset-x-4 bottom-4 z-50 flex flex-col items-end gap-3 sm:inset-x-auto sm:bottom-5 sm:right-5"
+      >
+        {open ? (
+          <section
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="portfolio-assistant-title"
+            className="surface flex max-h-[calc(100dvh-7rem)] w-full flex-col overflow-hidden rounded-2xl p-4 shadow-2xl sm:w-[min(34rem,calc(100vw-2.5rem))] border border-white/20 dark:border-white/10"
+          >
           {/* Header */}
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
@@ -427,5 +444,6 @@ export function PortfolioAssistant({ ownerName }: { ownerName: string }) {
         <span className="hidden sm:inline">Ask my portfolio</span>
       </button>
     </div>
+  </>
   );
 }
