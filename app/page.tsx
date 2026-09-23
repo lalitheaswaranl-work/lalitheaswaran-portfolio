@@ -35,13 +35,22 @@ import { getAchievements, getExplorerItems, getProjects, getSiteProfile, getSkil
 import { isRenderableProfileImage } from "@/lib/media";
 import { projectProof } from "@/lib/project-evidence";
 import { publicProfileCopy } from "@/lib/public-copy";
+import { renderMarkdownToHtml } from "@/lib/markdown";
 
 export default async function HomePage() {
-  const [profile, allItems, achievements] = await Promise.all([
+  const [profile, allItems, achievements, timeline] = await Promise.all([
     getSiteProfile(),
     getExplorerItems(),
-    getAchievements()
+    getAchievements(),
+    getTimeline()
   ]);
+
+  const timelineWithHtml = await Promise.all(
+    timeline.map(async (item) => ({
+      ...item,
+      descriptionHtml: await renderMarkdownToHtml(item.description ?? "")
+    }))
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -489,67 +498,99 @@ export default async function HomePage() {
                 Career Journey & Milestones
               </div>
               <h2 className="editorial-title text-3xl sm:text-5xl font-extrabold text-[var(--foreground)] tracking-tight">
-                From Foundations to Web SDK Architecture
+                Complete Career Journey & Architecture Timeline
               </h2>
               <p className="mt-4 text-base sm:text-lg text-[color-mix(in_srgb,var(--foreground),transparent_25%)] leading-relaxed">
-                A progressive trajectory from electrical engineering foundations to architecting multi-tenant, bank-grade Web SDKs for global financial institutions.
+                From academic electrical engineering foundations to architecting multi-tenant, bank-grade Web SDKs, biometric passkeys, and enterprise SaaS platforms.
               </p>
             </div>
-            <Link
-              href="/timeline"
-              className="clay-btn clay-btn-primary h-12 px-6 text-sm shrink-0 self-start md:self-auto"
-            >
-              View Full Interactive Timeline <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex flex-wrap gap-3 shrink-0 self-start md:self-auto">
+              <Link
+                href="/timeline"
+                className="clay-btn clay-btn-secondary h-11 px-5 text-xs font-semibold sm:text-sm"
+              >
+                Detailed Journey Hub <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/resume"
+                className="clay-btn clay-btn-primary h-11 px-5 text-xs font-semibold sm:text-sm"
+              >
+                <Download className="w-4 h-4 text-emerald-400" /> Resume & CV
+              </Link>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {[
-              {
-                period: "2019 – 2023",
-                title: "Engineering Foundation",
-                org: "M. Kumarasamy College of Eng.",
-                desc: "B.E. in Electrical & Electronics Engineering. Computational math, analytical systems, logic circuits, and algorithmic programming.",
-                badge: "Academic Degree",
-                color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
-              },
-              {
-                period: "2023 – 2024",
-                title: "Software Engineer",
-                org: "Maxco System",
-                desc: "Engineered enterprise B2B CRM with Redux Toolkit Kanban, virtualized contact tables, and high-traffic marathon payment gateway.",
-                badge: "Enterprise SaaS",
-                color: "text-purple-400 bg-purple-500/10 border-purple-500/20"
-              },
-              {
-                period: "2024 – 2025",
-                title: "Sr. Software Engineer",
-                org: "Viyansys / Visa Inc.",
-                desc: "Delivered Click to Pay (C2P) card enrollment portal and architected Flex Web SDK (546 commits) with WCAG 2.2 AA certification.",
-                badge: "FinTech SDKs",
-                color: "text-cobalt-400 bg-cobalt-500/10 border-cobalt-500/20"
-              },
-              {
-                period: "2025 – Present",
-                title: "Web SDK & Passkey Architect",
-                org: "VOBO WebSDK (Visa Inc.)",
-                desc: "Architected multi-tenant embeddable WebSDK with native Android CredentialManager passkey bridge and 190+ test suite.",
-                badge: "Current Role",
-                color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20"
-              }
-            ].map((step) => (
-              <div key={step.title} className="clay-card rounded-3xl p-6 space-y-3 relative overflow-hidden border border-white/10">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-cobalt-400">{step.period}</span>
-                  <span className={`font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full border ${step.color}`}>
-                    {step.badge}
-                  </span>
-                </div>
-                <h4 className="font-bold text-base text-[var(--foreground)]">{step.title}</h4>
-                <div className="text-xs font-medium text-cobalt-400">{step.org}</div>
-                <p className="text-xs text-[var(--muted)] leading-relaxed pt-1">{step.desc}</p>
-              </div>
-            ))}
+          {/* Full Connected Chronological Timeline Rail */}
+          <div className="relative space-y-6 before:absolute before:bottom-4 before:left-[1rem] before:top-4 before:w-0.5 before:bg-gradient-to-b before:from-cobalt-500 before:via-cyan-400 before:to-emerald-500/30 sm:before:left-[1.25rem]">
+            {timelineWithHtml.map((item) => {
+              const isViyansys = item.title.includes("Viyansys") || item.description?.includes("Viyansys");
+              const isMaxco = item.title.includes("MAXCO") || item.description?.includes("MAXCO");
+              const isVisa = item.title.includes("Visa") || item.description?.includes("Visa");
+
+              return (
+                <article
+                  id={`timeline-${item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}`}
+                  key={item.title}
+                  className="clay-card relative ml-10 sm:ml-12 scroll-mt-24 rounded-3xl p-6 sm:p-7 border border-white/10 space-y-3 before:absolute before:-left-[2.1rem] sm:before:-left-[2.35rem] before:top-7 before:h-4 before:w-4 before:rounded-full before:border-4 before:border-[var(--background)] before:bg-cobalt-400 before:shadow-[0_0_12px_rgba(56,189,248,0.8)] hover:border-cobalt-500/30 transition-all duration-300"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/5">
+                    <div>
+                      <span className="font-mono text-xs font-bold text-cobalt-400 uppercase tracking-wider">
+                        {item.period}
+                      </span>
+                      <h3 className="mt-1 text-lg sm:text-xl font-bold text-[var(--foreground)] tracking-tight">
+                        {item.title}
+                      </h3>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      {isVisa ? (
+                        <div className="relative h-5 w-16 shrink-0" title="Visa Inc (Enterprise Client)">
+                          <Image
+                            src="/media/visa-logo.png"
+                            alt="Visa Inc"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      ) : null}
+                      {isViyansys ? (
+                        <div className="relative h-6 w-24 shrink-0" title="Viyansys Solutions">
+                          <Image
+                            src="/media/viyansys-logo-dark.png"
+                            alt="Viyansys Solutions"
+                            fill
+                            className="hidden object-contain dark:block"
+                          />
+                          <Image
+                            src="/media/viyansys-logo.png"
+                            alt="Viyansys Solutions"
+                            fill
+                            className="block object-contain dark:hidden"
+                          />
+                        </div>
+                      ) : null}
+                      {isMaxco ? (
+                        <div className="relative h-5 w-20 shrink-0 rounded bg-white/95 px-1.5 py-0.5 dark:bg-white/90" title="MAXCO Systems">
+                          <Image
+                            src="/media/maxco-logo.png"
+                            alt="MAXCO Systems"
+                            fill
+                            className="object-contain p-0.5"
+                          />
+                        </div>
+                      ) : null}
+                      <span className="rounded-full bg-[var(--surface-support)] border hairline px-3 py-1 font-mono text-xs font-semibold text-[var(--muted)]">
+                        {item.signal}
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    className="prose-premium text-xs sm:text-sm leading-relaxed text-[var(--muted)]"
+                    dangerouslySetInnerHTML={{ __html: item.descriptionHtml }}
+                  />
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -27,7 +27,7 @@ export async function SiteShell({ children, profile: requestedProfile }: { child
     { href: "/#skills", label: "Skills" },
     { href: "/#experience", label: "Experience" },
     { href: "/#projects", label: "Projects" },
-    { href: "/timeline", label: "Timeline" },
+    { href: "/#timeline", label: "Timeline" },
     { href: "/#education", label: "Education" },
     { href: "/#contact", label: "Contact" },
   ];

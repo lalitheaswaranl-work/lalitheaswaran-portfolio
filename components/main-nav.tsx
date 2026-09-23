@@ -32,9 +32,15 @@ export function MainNav({ items, isAdmin, adminLabel }: MainNavProps) {
       setActiveHash("#overview");
     }
 
-    const sectionIds = ["overview", "skills", "experience", "projects", "education", "contact"];
+    const sectionIds = ["overview", "skills", "experience", "projects", "timeline", "education", "contact"];
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 140;
+      // If at bottom of page, activate last section
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60) {
+        setActiveHash("#contact");
+        return;
+      }
+
+      const scrollPosition = window.scrollY + 160;
       let currentSection = "overview";
 
       for (const id of sectionIds) {
