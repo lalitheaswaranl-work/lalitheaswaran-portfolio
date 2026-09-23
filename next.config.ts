@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { withWorkflow } from "workflow/next";
 
 const nextConfig: NextConfig = {
   async redirects() {
@@ -13,4 +12,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withWorkflow(nextConfig);
+export default nextConfig;
