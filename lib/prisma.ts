@@ -4,12 +4,6 @@ import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-/**
- * Build a connection URL with pool-safety parameters for Neon serverless Postgres.
- * - connection_limit: keep well below Neon's per-endpoint cap (default 9 on free tier)
- * - pool_timeout: seconds to wait for a free connection before throwing
- * - connect_timeout: seconds to wait for the TCP handshake / TLS setup
- */
 function buildDatasourceUrl(): string | undefined {
   const base = process.env.DATABASE_URL;
   if (!base) return undefined;
@@ -33,11 +27,26 @@ function buildDatasourceUrl(): string | undefined {
 
 function createPrismaClient(): PrismaClient {
   const datasourceUrl = buildDatasourceUrl();
-  const adapter = datasourceUrl ? new PrismaPg(datasourceUrl) : undefined;
+  if (!datasourceUrl) {
+    // Pure static architecture: return a safe mock client with zero DB connections
+    return new Proxy({} as PrismaClient, {
+      get(_target, prop) {
+        if (prop === "$queryRaw" || prop === "$executeRaw") {
+          return () => Promise.resolve([]);
+        }
+        return new Proxy({}, {
+          get() {
+            return () => Promise.resolve(null);
+          }
+        });
+      }
+    });
+  }
 
+  const adapter = new PrismaPg(datasourceUrl);
   return new PrismaClient({
     log: ["warn"],
-    ...(adapter && { adapter }),
+    adapter,
   });
 }
 

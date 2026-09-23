@@ -64,7 +64,7 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/lalitheaswaranl-work/portfolio.git
+git clone https://github.com/lalitheaswaranl-work/lalitheaswaran-portfolio.git
 cd portfolio
 ```
 
@@ -130,7 +130,7 @@ npx playwright test
 - **Location**: Chennai, Tamil Nadu, India (Open to Worldwide Relocation & Remote)
 - **Email**: [lalitheaswaranlwork@gmail.com](mailto:lalitheaswaranlwork@gmail.com)
 - **GitHub**: [github.com/lalitheaswaranl-work](https://github.com/lalitheaswaranl-work)
-- **Portfolio**: [https://github.com/lalitheaswaranl-work/portfolio](https://github.com/lalitheaswaranl-work/portfolio)
+- **Portfolio**: [https://github.com/lalitheaswaranl-work/lalitheaswaran-portfolio](https://github.com/lalitheaswaranl-work/lalitheaswaran-portfolio)
 - **Notice Period**: 45 Days (Actively Interviewing)
 
 ---

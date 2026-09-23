@@ -12,11 +12,9 @@ export interface NavItem {
 
 interface MainNavProps {
   items: NavItem[];
-  isAdmin?: boolean;
-  adminLabel?: string;
 }
 
-export function MainNav({ items, isAdmin, adminLabel }: MainNavProps) {
+export function MainNav({ items }: MainNavProps) {
   const pathname = usePathname();
   const [activeHash, setActiveHash] = useState<string>("");
 
@@ -34,7 +32,7 @@ export function MainNav({ items, isAdmin, adminLabel }: MainNavProps) {
 
     const sectionIds = ["overview", "skills", "experience", "projects", "timeline", "education", "contact"];
     const handleScroll = () => {
-      // If at bottom of page, activate last section
+      // If at bottom of page, activate last section (Contact)
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60) {
         setActiveHash("#contact");
         return;
@@ -56,18 +54,19 @@ export function MainNav({ items, isAdmin, adminLabel }: MainNavProps) {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (pathname === "/" && href.startsWith("/#")) {
       const targetId = href.replace("/#", "");
-      const targetEl = document.getElementById(targetId);
+      const targetEl = document.getElementById(targetId) || (targetId === "dashboard" ? document.getElementById("overview") : null);
       if (targetEl) {
         e.preventDefault();
         targetEl.scrollIntoView({ behavior: "smooth" });
         window.history.pushState(null, "", href.replace("/", ""));
-        setActiveHash(`#${targetId}`);
+        setActiveHash(`#${targetId === "dashboard" ? "overview" : targetId}`);
       }
     }
   };
@@ -82,7 +81,10 @@ export function MainNav({ items, isAdmin, adminLabel }: MainNavProps) {
         if (pathname === "/") {
           if (item.href.startsWith("/#")) {
             const hash = item.href.replace("/", "");
-            isActive = activeHash === hash || (hash === "#overview" && (activeHash === "" || activeHash === "#overview"));
+            isActive =
+              activeHash === hash ||
+              ((hash === "#overview" || hash === "#dashboard") &&
+                (activeHash === "" || activeHash === "#overview" || activeHash === "#dashboard"));
           } else {
             isActive = item.href === "/";
           }
@@ -117,23 +119,6 @@ export function MainNav({ items, isAdmin, adminLabel }: MainNavProps) {
           </Link>
         );
       })}
-
-      {isAdmin ? (
-        <Link
-          href="/admin"
-          aria-current={pathname.startsWith("/admin") ? "page" : undefined}
-          className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 sm:text-sm flex items-center gap-1.5 ${
-            pathname.startsWith("/admin")
-              ? "clay-pill bg-[var(--clay-bg)] text-cobalt-600 dark:text-cobalt-300 font-bold shadow-md ring-1 ring-cobalt-500/30"
-              : "text-cobalt-600 dark:text-cobalt-400 hover:clay-pill hover:bg-[var(--clay-bg)] hover:text-cobalt-700 dark:hover:text-cobalt-200"
-          }`}
-        >
-          {pathname.startsWith("/admin") && (
-            <span className="w-1.5 h-1.5 rounded-full bg-cobalt-500 animate-pulse" />
-          )}
-          {adminLabel || "Admin CMS"}
-        </Link>
-      ) : null}
     </nav>
   );
 }

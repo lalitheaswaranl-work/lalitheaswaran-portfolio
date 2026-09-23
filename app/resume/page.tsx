@@ -140,7 +140,7 @@ export default async function ResumePage() {
                 linkedin.com/in/lalitheaswaran
               </a>
               <a
-                href="https://github.com/lalitheaswaranl-work/portfolio"
+                href="https://github.com/lalitheaswaranl-work/lalitheaswaran-portfolio"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-2 hover:text-cobalt-400 transition-colors"

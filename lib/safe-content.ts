@@ -23,7 +23,7 @@ export const safeSiteProfile: SiteProfile = {
   contactEmail: "lalitheaswaranlwork@gmail.com",
   contactPhone: "+91 9787288277",
   contactLocation: "Chennai, Tamil Nadu, India",
-  githubUrl: "https://github.com/lalitheaswaranl-work/portfolio",
+  githubUrl: "https://github.com/lalitheaswaranl-work/lalitheaswaran-portfolio",
   linkedinUrl: "https://www.linkedin.com/in/lalitheaswaran",
   heroEyebrow: "Senior Frontend Developer (4 Years Experience)",
   heroTitle:

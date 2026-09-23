@@ -48,7 +48,7 @@ __pycache__/
 .ruff_cache/
 
 # local data
-Data/
+/Data/
 docs/
 !docs/
 docs/*

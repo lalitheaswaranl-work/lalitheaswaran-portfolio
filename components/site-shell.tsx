@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { LogIn, Mail, MapPin, Settings, Phone } from "lucide-react";
-import { AdminLogoutButton } from "@/components/admin-logout-button";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { PortfolioAssistant } from "@/components/portfolio-assistant";
 import { GitHubIcon, LinkedInIcon } from "@/components/social-icons";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -9,7 +8,7 @@ import { ReplayIntroButton } from "@/components/replay-intro-button";
 import { NavigationFeedback } from "@/components/navigation-feedback";
 import { EditModeProvider } from "@/components/edit-mode-provider";
 import { MainNav } from "@/components/main-nav";
-import { getAdminSession } from "@/lib/auth";
+import { BrandLogo } from "@/components/brand-logo";
 import { getSiteProfile } from "@/lib/content";
 import { isRenderableProfileImage } from "@/lib/media";
 import type { SiteProfile } from "@/lib/types";
@@ -20,22 +19,24 @@ function telHref(phone?: string | null) {
 
 export async function SiteShell({ children, profile: requestedProfile }: { children: React.ReactNode; profile?: SiteProfile }) {
   const profile = requestedProfile ?? await getSiteProfile();
-  const session = await getAdminSession();
   const profileImage = isRenderableProfileImage(profile.profileImageUrl) ? profile.profileImageUrl : undefined;
+  
   const nav = [
-    { href: "/#overview", label: "Home" },
-    { href: "/#skills", label: "Skills" },
+    { href: "/#overview", label: "Dashboard" },
+    { href: "/#skills", label: "Skill" },
     { href: "/#experience", label: "Experience" },
     { href: "/#projects", label: "Projects" },
     { href: "/#timeline", label: "Timeline" },
     { href: "/#education", label: "Education" },
     { href: "/#contact", label: "Contact" },
   ];
+
   const contactItems = [
     profile.contactEmail ? { label: profile.contactEmail, href: `mailto:${profile.contactEmail}`, icon: Mail } : null,
     profile.contactPhone ? { label: profile.contactPhone, href: telHref(profile.contactPhone), icon: Phone } : null,
     profile.contactLocation ? { label: profile.contactLocation, href: undefined, icon: MapPin } : null
   ].filter(Boolean) as Array<{ label: string; href?: string; icon: typeof Mail }>;
+
   const socialItems = [
     profile.githubUrl
       ? { label: "GitHub profile", href: profile.githubUrl, icon: GitHubIcon, colorClass: "" }
@@ -46,7 +47,7 @@ export async function SiteShell({ children, profile: requestedProfile }: { child
   ].filter(Boolean) as Array<{ label: string; href: string; icon: typeof GitHubIcon; colorClass: string }>;
 
   return (
-    <EditModeProvider authenticated={Boolean(session?.user?.id)}>
+    <EditModeProvider authenticated={false}>
       <div className="min-h-screen">
       <NavigationFeedback />
       <a
@@ -60,6 +61,7 @@ export async function SiteShell({ children, profile: requestedProfile }: { child
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="flex min-h-[4rem] items-center justify-between gap-4 py-2.5">
             <Link href="/" className="group flex min-w-0 items-center gap-3" aria-label="Home">
+              <BrandLogo size={36} glow={false} className="group-hover:scale-105 transition-transform" />
               <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border hairline bg-ink-900 text-xs font-semibold text-ink-50 dark:bg-ink-50 dark:text-ink-900">
                 {profileImage ? (
                   <Image
@@ -104,28 +106,11 @@ export async function SiteShell({ children, profile: requestedProfile }: { child
               </div>
               <ReplayIntroButton />
               <ThemeToggle />
-              {session?.user ? (
-                <>
-                  <Link href="/admin" aria-label="Open portfolio admin" title="Admin" className="grid h-9 w-9 place-items-center rounded-md text-[var(--muted)] transition hover:bg-[var(--panel)] hover:text-[var(--foreground)]">
-                    <Settings aria-hidden className="h-4 w-4" />
-                  </Link>
-                  <AdminLogoutButton compact />
-                </>
-              ) : (
-                <Link href="/admin/login" aria-label="Admin login" className="clay-btn clay-btn-secondary h-10 px-3.5 text-xs font-semibold sm:text-sm">
-                  <LogIn aria-hidden className="h-4 w-4" />
-                  <span className="hidden sm:inline">Admin login</span>
-                </Link>
-              )}
             </div>
           </div>
 
           <div className="flex min-w-0 items-center justify-between gap-4 border-t hairline">
-            <MainNav
-              items={nav}
-              isAdmin={Boolean(session?.user)}
-              adminLabel={profile.adminCmsLabel || "Admin CMS"}
-            />
+            <MainNav items={nav} />
 
             {contactItems.length ? (
               <div className="hidden min-w-0 items-center gap-4 text-xs text-[var(--muted)] xl:flex">
