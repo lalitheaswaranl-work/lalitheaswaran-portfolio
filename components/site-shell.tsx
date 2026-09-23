@@ -23,10 +23,13 @@ export async function SiteShell({ children, profile: requestedProfile }: { child
   const session = await getAdminSession();
   const profileImage = isRenderableProfileImage(profile.profileImageUrl) ? profile.profileImageUrl : undefined;
   const nav = [
-    { href: "/", label: "Overview" },
-    { href: "/resume", label: profile.navResumeLabel || "Resume" },
-    { href: "/timeline", label: profile.navExperienceLabel || "Journey" },
-    { href: "/jobs", label: "Jobs & Openings", shortLabel: "Jobs" },
+    { href: "/#overview", label: "Home" },
+    { href: "/#skills", label: "Skills" },
+    { href: "/#experience", label: "Experience" },
+    { href: "/#projects", label: "Projects" },
+    { href: "/timeline", label: "Timeline" },
+    { href: "/#education", label: "Education" },
+    { href: "/#contact", label: "Contact" },
   ];
   const contactItems = [
     profile.contactEmail ? { label: profile.contactEmail, href: `mailto:${profile.contactEmail}`, icon: Mail } : null,

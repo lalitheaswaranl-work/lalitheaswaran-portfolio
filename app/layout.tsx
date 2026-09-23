@@ -24,35 +24,43 @@ const geistMono = Geist_Mono({
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await getSiteProfile();
   const description = publicProfileCopy(profile.seoDescription, publicProfileSummary);
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null) ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+    (process.env.NEXTAUTH_URL && !process.env.NEXTAUTH_URL.includes("localhost") ? process.env.NEXTAUTH_URL : null) ||
+    "https://lalitheaswaran-portfolio.vercel.app";
+
   return {
-  metadataBase: new URL(process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
-  title: { default: profile.seoTitle, template: `%s | ${profile.name}` },
-  description,
-  icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    shortcut: "/icon.svg"
-  },
-  openGraph: {
-    title: profile.seoTitle,
+    metadataBase: new URL(siteUrl),
+    title: { default: profile.seoTitle, template: `%s | ${profile.name}` },
     description,
-    url: "/",
-    siteName: profile.name,
-    type: "website",
-    images: [
-      {
-        url: "/media/ai-systems-hero.png",
-        width: 1672,
-        height: 941,
-        alt: "Abstract AI systems dashboard visual"
-      }
-    ]
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: profile.seoTitle,
-    description,
-    images: ["/media/ai-systems-hero.png"]
-  }
+    icons: {
+      icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+      shortcut: "/icon.svg",
+      apple: "/icon.svg"
+    },
+    openGraph: {
+      title: profile.seoTitle,
+      description,
+      url: "/",
+      siteName: profile.name,
+      type: "website",
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: `${profile.name} - L Logo Favicon`
+        }
+      ]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: profile.seoTitle,
+      description,
+      images: ["/opengraph-image"]
+    }
   };
 }
 
@@ -87,6 +95,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <meta name="description" content={publicProfileCopy(safeSiteProfile.seoDescription, publicProfileSummary)} />
+        <link rel="image_src" href="/opengraph-image" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
         <Script id="root-init-script" strategy="beforeInteractive">
